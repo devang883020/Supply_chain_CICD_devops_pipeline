@@ -20,17 +20,21 @@ pipeline {
         }
 
         stage('SonarQube Scan (SAST)') {
-            steps {
-                withSonarQubeEnv("${SONAR_ENV}") {
-                    sh '''
-                      sonar-scanner \
-                        -Dsonar.projectKey=phase1-secure-pipeline \
-                        -Dsonar.projectName=phase1-secure-pipeline \
-                        -Dsonar.sources=.
-                    '''
-                }
+    steps {
+        script {
+            def scannerHome = tool 'sonar-scanner'
+            withSonarQubeEnv('sonarqube') {
+                sh """
+                  ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=phase1-secure-pipeline \
+                    -Dsonar.projectName=phase1-secure-pipeline \
+                    -Dsonar.sources=.
+                """
             }
         }
+    }
+}
+
 
         stage('Quality Gate') {
             steps {
