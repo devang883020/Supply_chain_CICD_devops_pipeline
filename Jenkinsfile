@@ -44,6 +44,21 @@ pipeline {
             }
         }
 
+       
+        stage('Trivy FS Scan (Dependencies)') {
+    steps {
+        sh '''
+          trivy fs \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            --no-progress \
+            .
+        '''
+    }
+}
+
+
+
         stage('Build Docker Image') {
             steps {
                 sh '''
