@@ -67,7 +67,17 @@ pipeline {
             }
         }
 
-        stage('Trivy Image Scan') {
+     
+
+        stage('Tag Image') {
+            steps {
+                sh '''
+                  docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE}
+                '''
+            }
+        }
+
+           stage('Trivy Image Scan') {
     steps {
         sh '''
           trivy image \
@@ -80,13 +90,7 @@ pipeline {
 }
 
 
-        stage('Tag Image') {
-            steps {
-                sh '''
-                  docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE}
-                '''
-            }
-        }
+
 
         stage('Login to Harbor') {
             steps {
