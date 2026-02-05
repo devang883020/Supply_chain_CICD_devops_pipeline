@@ -8,6 +8,7 @@ pipeline {
         IMAGE_TAG     = "${env.GIT_COMMIT.take(7)}"
         FULL_IMAGE    = "${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
         DOCKER_CREDS  = "harbor-creds"
+        SONAR_ENV     = "sonarqube"
     }
 
     stages {
@@ -15,6 +16,27 @@ pipeline {
         stage('Checkout Source') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('SonarQube Scan (SAST)') {
+            steps {
+                withSonarQubeEnv("${SONAR_ENV}") {
+                    sh '''
+                      sonar-scanner \
+                        -Dsonar.projectKey=phase1-secure-pipeline \
+                        -Dsonar.projectName=phase1-secure-pipeline \
+                        -Dsonar.sources=.
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
@@ -60,10 +82,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Image pushed successfully: ${FULL_IMAGE}"
+            echo "✅ Secure image pushed: ${FULL_IMAGE}"
         }
         failure {
-            echo "❌ Pipeline failed"
+            echo "❌ Pipeline blocked due to security/quality failure"
         }
     }
 }
