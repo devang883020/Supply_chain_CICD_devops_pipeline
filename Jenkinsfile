@@ -82,7 +82,7 @@ pipeline {
         sh '''
           trivy image \
             --scanners vuln \
-            --skip-java-db-update \
+            
             --severity HIGH,CRITICAL \
             --exit-code 1 \
             --no-progress \
