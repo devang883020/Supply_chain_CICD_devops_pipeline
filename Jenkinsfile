@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY      = "13.201.12.133"
+        REGISTRY      = "13.201.25.221"
         PROJECT       = "phase1-project"
         IMAGE_NAME    = "nginx"
         IMAGE_TAG     = "${env.GIT_COMMIT.take(7)}"
@@ -81,6 +81,7 @@ pipeline {
     steps {
         sh '''
           trivy image \
+            --scanners vuln \
             --severity HIGH,CRITICAL \
             --exit-code 1 \
             --no-progress \
