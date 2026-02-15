@@ -151,11 +151,13 @@ stage('Get Digest') {
 
 stage('Verify Signature') {
     steps {
-        sh """
-          cosign verify \
-            --key cosign.pub \
-            ${IMAGE_DIGEST}
-        """
+        withCredentials([
+            file(credentialsId: 'cosign-public-key', variable: 'COSIGN_PUB')
+        ]) {
+            sh """
+              cosign verify --key \$COSIGN_PUB ${REGISTRY}/${PROJECT}/${IMAGE_NAME}@${env.IMAGE_DIGEST}
+            """
+        }
     }
 }
 
