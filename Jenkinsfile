@@ -9,6 +9,7 @@ pipeline {
         FULL_IMAGE    = "${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
         DOCKER_CREDS  = "harbor-creds"
         SONAR_ENV     = "sonarqube"
+        COSIGN_KEY_CRED = "cosign-private-key"
     }
 
     stages {
@@ -116,6 +117,46 @@ pipeline {
                 '''
             }
         }
+
+    stage('Get Image Digest') {
+    steps {
+        script {
+            IMAGE_DIGEST = sh(
+                script: "docker inspect --format='{{index .RepoDigests 0}}' ${FULL_IMAGE}",
+                returnStdout: true
+            ).trim()
+            echo "Image Digest: ${IMAGE_DIGEST}"
+        }
+    }
+}
+     
+
+      stage('Sign Image') {
+    steps {
+        withCredentials([file(
+            credentialsId: "${COSIGN_KEY_CRED}",
+            variable: 'COSIGN_KEY'
+        )]) {
+            sh '''
+              cosign sign \
+                --key $COSIGN_KEY \
+                ${IMAGE_DIGEST}
+            '''
+        }
+    }
+}
+
+
+stage('Verify Signature') {
+    steps {
+        sh '''
+          cosign verify \
+            --key cosign.pub \
+            ${IMAGE_DIGEST}
+        '''
+    }
+}
+     
     }
 
     post {
