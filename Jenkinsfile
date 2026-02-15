@@ -49,7 +49,6 @@ pipeline {
     steps {
         sh '''
           trivy fs \
-	    --skip-version-check flag \
             --severity HIGH,CRITICAL \
             --exit-code 1 \
             --no-progress \
@@ -83,6 +82,7 @@ pipeline {
         sh '''
           trivy image \
             --scanners vuln \
+            --skip-version-check flag \
             --severity HIGH,CRITICAL \
             --exit-code 1 \
             --no-progress \
