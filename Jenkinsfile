@@ -135,10 +135,13 @@ stage('Get Digest') {
 
      
 
-  stage('Sign Image') {
+ stage('Sign Image') {
     steps {
-        withCredentials([file(credentialsId: "${COSIGN_KEY_CRED}", variable: 'COSIGN_KEY')]) {
+        withCredentials([
+            file(credentialsId: "${COSIGN_KEY_CRED}", variable: 'COSIGN_KEY')
+        ]) {
             sh """
+              export COSIGN_PASSWORD=""
               cosign sign --key \$COSIGN_KEY ${REGISTRY}/${PROJECT}/${IMAGE_NAME}@${env.IMAGE_DIGEST}
             """
         }
