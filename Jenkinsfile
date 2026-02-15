@@ -118,17 +118,21 @@ pipeline {
             }
         }
 
-    stage('Get Image Digest') {
+stage('Get Digest') {
     steps {
         script {
-            IMAGE_DIGEST = sh(
+            def fullDigest = sh(
                 script: "docker inspect --format='{{index .RepoDigests 0}}' ${FULL_IMAGE}",
                 returnStdout: true
             ).trim()
-            echo "Image Digest: ${IMAGE_DIGEST}"
+
+            env.IMAGE_DIGEST = fullDigest.split('@')[1]
+
+            echo "Image Digest: ${env.IMAGE_DIGEST}"
         }
     }
 }
+
      
 
    stage('Sign Image') {
