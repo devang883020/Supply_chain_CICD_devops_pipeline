@@ -134,14 +134,14 @@ pipeline {
       stage('Sign Image') {
     steps {
         withCredentials([file(
-            credentialsId: "${COSIGN_KEY_CRED}",
+            credentialsId: "${cosign-private-key}",
             variable: 'COSIGN_KEY'
         )]) {
-            sh '''
+            sh """
               cosign sign \
-                --key $COSIGN_KEY \
+                --key \$COSIGN_KEY \
                 ${IMAGE_DIGEST}
-            '''
+            """
         }
     }
 }
@@ -149,13 +149,14 @@ pipeline {
 
 stage('Verify Signature') {
     steps {
-        sh '''
+        sh """
           cosign verify \
             --key cosign.pub \
             ${IMAGE_DIGEST}
-        '''
+        """
     }
 }
+
      
     }
 
