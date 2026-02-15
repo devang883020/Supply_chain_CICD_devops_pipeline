@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY      = "65.2.175.185"
+        REGISTRY      = "13.127.45.33"
         PROJECT       = "phase1-project"
         IMAGE_NAME    = "nginx"
         IMAGE_TAG     = "${env.GIT_COMMIT.take(7)}"
