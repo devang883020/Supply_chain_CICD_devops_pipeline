@@ -131,17 +131,12 @@ pipeline {
 }
      
 
-      stage('Sign Image') {
+   stage('Sign Image') {
     steps {
-        withCredentials([file(
-            credentialsId: 'cosign-private-key',
-            variable: 'COSIGN_KEY'
-        )]) {
-            sh """
-              cosign sign \
-                --key \$COSIGN_KEY \
-                ${IMAGE_DIGEST}
-            """
+        withCredentials([file(credentialsId: 'cosign-private-key', variable: 'COSIGN_KEY')]) {
+            sh '''
+              cosign sign --key $COSIGN_KEY 13.127.45.33/phase1-project/nginx@${IMAGE_DIGEST}
+            '''
         }
     }
 }
