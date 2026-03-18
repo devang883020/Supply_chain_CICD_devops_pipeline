@@ -1,1 +1,3 @@
-FROM nginx:1.24.0-alpine
+FROM nginx:alpine
+
+RUN apk update && apk upgrade
