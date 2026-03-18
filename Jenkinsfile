@@ -98,7 +98,7 @@ pipeline {
         stage('Login to Harbor') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "${harbor-creds}",
+                    credentialsId: "${DOCKER_CREDS}",
                     usernameVariable: 'HARBOR_USER',
                     passwordVariable: 'HARBOR_PASS'
                 )]) {
