@@ -140,27 +140,26 @@ stage('Get Digest') {
         withCredentials([file(credentialsId: 'cosign-private-key', variable: 'COSIGN_KEY')]) {
             sh '''
             export COSIGN_PASSWORD=""
-            export COSIGN_INSECURE_SKIP_VERIFY=true
 
-            cosign sign --key $COSIGN_KEY ${FULL_IMAGE}
+            cosign sign \
+              --key $COSIGN_KEY \
+              --allow-insecure-registry \
+              ${FULL_IMAGE}
             '''
         }
     }
 }
 
-
 stage('Verify Signature') {
     steps {
-        withCredentials([
-            file(credentialsId: 'cosign-public-key', variable: 'COSIGN_PUB')
-        ]) {
-            sh """
-              cosign verify --key \$COSIGN_PUB ${REGISTRY}/${PROJECT}/${IMAGE_NAME}@${env.IMAGE_DIGEST}
-            """
-        }
+        sh '''
+        cosign verify \
+          --key cosign.pub \
+          --allow-insecure-registry \
+          ${FULL_IMAGE}
+        '''
     }
 }
-
      
     }
 
