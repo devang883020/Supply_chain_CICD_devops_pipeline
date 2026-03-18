@@ -82,14 +82,7 @@ Trusted CA certificates
 
 Proper TLS configuration
 
-# 📂 Project Structure
-.
-├── Jenkinsfile
-├── deployment.yaml
-├── cosign-policy.yaml
-├── Dockerfile
-├── app/
-└── README.md
+
 # ⚙️ Setup Instructions (High-Level)
 1. Build & Push Image
 docker build -t <harbor-ip>/project/image:tag .
