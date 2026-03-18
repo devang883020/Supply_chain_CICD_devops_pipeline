@@ -1,3 +1,3 @@
-FROM nginx:alpine
+FROM nginx:alpine-slim
 
 RUN apk update && apk upgrade
