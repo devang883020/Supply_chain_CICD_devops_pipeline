@@ -152,15 +152,16 @@ stage('Get Digest') {
 
 stage('Verify Signature') {
     steps {
-        sh '''
-        cosign verify \
-          --key cosign.pub \
-          --allow-insecure-registry \
-          ${FULL_IMAGE}
-        '''
+        withCredentials([file(credentialsId: 'cosign-public-key', variable: 'COSIGN_PUB')]) {
+            sh '''
+            cosign verify \
+              --key $COSIGN_PUB \
+              --allow-insecure-registry \
+              ${FULL_IMAGE}
+            '''
+        }
     }
-}
-     
+}   
     }
 
     post {
