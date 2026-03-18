@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY      = "3.109.49.250"
+        REGISTRY      = "13.201.5.228"
         PROJECT       = "phase1-project"
         IMAGE_NAME    = "nginx"
         IMAGE_TAG     = "${env.GIT_COMMIT.take(7)}"
@@ -98,7 +98,7 @@ pipeline {
         stage('Login to Harbor') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "${DOCKER_CREDS}",
+                    credentialsId: "${harbor-creds}",
                     usernameVariable: 'HARBOR_USER',
                     passwordVariable: 'HARBOR_PASS'
                 )]) {
